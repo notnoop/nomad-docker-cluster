@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  nomad-server-01:
+    image: debian:latest
+    command:
+    - /bin/sh
+    - -c
+    - ln -s /opt/bin/nomad /usr/bin/nomad && exec nomad agent --config=/etc/nomad.d/server.hcl
+    volumes: &volumes
+      - "./bin:/opt/bin"
+      - "./conf:/etc/nomad.d"
+
+  nomad-client-01:
+    image: debian:latest
+    command:
+    - /bin/sh
+    - -c
+    - ln -s /opt/bin/nomad /usr/bin/nomad && exec nomad agent --config=/etc/nomad.d/client.hcl -servers nomad-server-01
+    volumes: *volumes
+    privileged: true
